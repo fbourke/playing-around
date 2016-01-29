@@ -16,11 +16,8 @@ n = -1
 
 while True:
     n = n+0.01
-    # alpha and beta should add to ~about~ 1
-    # 0.95/0.05 will make a new average about every 20 frames
     alpha = logistic(n)
     beta = 1-alpha
-    print alpha
     ret, frame = video_capture.read()
     # AddWeighted only takes cvmat type objects
     new_frame = cv2.cv.fromarray(frame)

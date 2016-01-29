@@ -17,6 +17,7 @@ This displays a moving average of the image from the webcam. In the file, two co
 
 	alpha = 0.96
     beta = 0.05
+    cv2.cv.AddWeighted(dst, alpha, new_frame, beta, 0, dst) 
     
 When they add to other than 1, the exposure will be different from the output of the webcam. Any more than about 1.10 and the image will be quite bright. 
 

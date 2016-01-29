@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import random
 import sys
+import time
 
 def logistic(x):
     exp_x = np.exp(x)
@@ -11,8 +12,10 @@ def logistic(x):
 video_capture = cv2.VideoCapture(0)
 # init our variables
 ret, frame = video_capture.read()
+height, width, channels = frame.shape
 dst = cv2.cv.fromarray(frame)
 n = -1
+start = time.time()
 
 while True:
     n = n+0.01
@@ -30,9 +33,13 @@ while True:
     # flip it so it's more natural to watch
     fl = cv2.flip(arr, 1)
     # put some instructions on screen
-    cv2.putText(fl, 'Press r to reset', (10,500), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 2)
+    color = cv2.cv.Scalar(random.randint(0,255), random.randint(0,255), random.randint(0,255));
+    cv2.putText(fl, 'Press r to reset', (width-550,height-25), cv2.FONT_HERSHEY_DUPLEX, 2, color, 2)
+    looptime = 1/(time.time() - start)
+    cv2.putText(fl, 'Framerate: %.3f FPS' % looptime, (10,height-25), cv2.FONT_HERSHEY_DUPLEX, 1, color, 2)
     # Display the resulting frame
     cv2.imshow('test', fl)
+    start = time.time()
 
     if cv2.waitKey(1) & 0xFF == ord('r'):
         n = -1

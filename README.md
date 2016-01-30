@@ -16,9 +16,9 @@ This takes a stream from the webcam, detects faces, and draws a green box around
 This displays a moving average of the image from the webcam. In the file, two constants, *alpha* and *beta* set the weight of the average and new frames.
 
 	alpha = 0.96
-    beta = 0.05
-    cv2.cv.AddWeighted(dst, alpha, new_frame, beta, 0, dst) 
-    
+	beta = 0.05
+	cv2.cv.AddWeighted(dst, alpha, new_frame, beta, 0, dst) 
+	
 When they add to other than 1, the exposure will be different from the output of the webcam. Any more than about 1.10 and the image will be quite bright. 
 
 ## light.mov ##

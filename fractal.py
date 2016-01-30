@@ -69,13 +69,13 @@ while True:
 	recursiveTree(x, y, start_theta, 1)
 	looptime = 1/(time.time() - start)
 	color = cv2.cv.Scalar(random.randint(0,255), random.randint(0,255), random.randint(0,255))
-    cv2.putText(fl, 'Framerate: %.3f FPS' % looptime, (10,height-25), cv2.FONT_HERSHEY_DUPLEX, 1, color, 2)
+	cv2.putText(image, 'Framerate: %.1f FPS' % looptime, (10,height-25), cv2.FONT_HERSHEY_DUPLEX, 1, color, 1)
 	# Display the resulting frame
 	cv2.imshow('video', image)
 	image = np.zeros((height,width,3), np.uint8)
 	start = time.time()
 	if cv2.waitKey(1) & 0xFF == ord('q'):
-	    break
+		break
 
 
 # show the image

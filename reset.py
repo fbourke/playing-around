@@ -4,9 +4,15 @@ import random
 import sys
 import time
 
+STARTING_NUMBER = 0
+
 def logistic(x):
+    if x > 700:
+        return 1
     exp_x = np.exp(x)
     return exp_x/(1+exp_x)
+def sortOfLog(x):
+    return 1-(1/x)
 
 # initalise the camera
 video_capture = cv2.VideoCapture(0)
@@ -14,7 +20,7 @@ video_capture = cv2.VideoCapture(0)
 ret, frame = video_capture.read()
 height, width, channels = frame.shape
 dst = cv2.cv.fromarray(frame)
-n = -1
+n = STARTING_NUMBER
 start = time.time()
 
 while True:
@@ -42,7 +48,7 @@ while True:
     start = time.time()
 
     if cv2.waitKey(1) & 0xFF == ord('r'):
-        n = -1
+        n = STARTING_NUMBER
     elif cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

@@ -33,7 +33,7 @@ def recursiveTree(start_x,start_y,theta,depth):
 	# uncomment for step-by-step drawing
 	# cv2.imshow("Fractal", image)
 	# cv2.waitKey(0)
-	threshold = 50
+	threshold = 100
 	branches = 5
 	total_angle = np.pi/1.1
 	for i in range(1,branches+2):
@@ -64,9 +64,20 @@ length = 200
 start_theta = 3*np.pi/2
 # deflection = 400
 # drawLines(x,y,depth)
-recursiveTree(x, y, start_theta, 1)
+start = time.time()
+while True:
+	recursiveTree(x, y, start_theta, 1)
+	looptime = 1/(time.time() - start)
+	color = cv2.cv.Scalar(random.randint(0,255), random.randint(0,255), random.randint(0,255))
+    cv2.putText(fl, 'Framerate: %.3f FPS' % looptime, (10,height-25), cv2.FONT_HERSHEY_DUPLEX, 1, color, 2)
+	# Display the resulting frame
+	cv2.imshow('video', image)
+	image = np.zeros((height,width,3), np.uint8)
+	start = time.time()
+	if cv2.waitKey(1) & 0xFF == ord('q'):
+	    break
 
 
 # show the image
-cv2.imshow("Fractal", image)
+cv2.imshow('video', image)
 cv2.waitKey(0)

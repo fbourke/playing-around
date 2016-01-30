@@ -23,7 +23,7 @@ def drawLines(start_x,start_y,depth):
 
 
 def recursiveTree(start_x,start_y,theta,depth): 
-	max_depth = 8
+	max_depth = 6
 	if depth > max_depth:
 		return
 	x = start_x
@@ -33,8 +33,12 @@ def recursiveTree(start_x,start_y,theta,depth):
 	# uncomment for step-by-step drawing
 	# cv2.imshow("Fractal", image)
 	# cv2.waitKey(0)
-	recursiveTree(new_x, new_y, theta + np.pi/8, d+1)	
-	recursiveTree(new_x, new_y, theta - np.pi/8, d+1)
+	threshold = 50
+	branches = 5
+	total_angle = np.pi/1.1
+	for i in range(1,branches+2):
+		if random.randint(0,255) > threshold:
+			recursiveTree(new_x, new_y, theta + (i-1)*total_angle/branches - total_angle/2, d+1)	
 
 def drawPolarLine((start_x,start_y), r, theta):
 	x_len = r*np.cos(theta)
@@ -56,7 +60,7 @@ cv2.circle(image, (x,y), 2, (0,255,0))
 
 # make some lines
 # depth = 1
-length = 180
+length = 200
 start_theta = 3*np.pi/2
 # deflection = 400
 # drawLines(x,y,depth)

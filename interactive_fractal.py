@@ -4,6 +4,8 @@ import random
 import time
 import sys
 
+finish = False
+
 def drawLines(start_x,start_y,depth): 
 	max_depth = 5
 	if depth > max_depth:
@@ -22,36 +24,39 @@ def drawLines(start_x,start_y,depth):
 	drawLines(x+length/d, y-deflection/d, d+1)
 
 
-def recursiveTree(start_x,start_y,theta,depth,finish): 
-	max_depth = 7
+def recursiveTree(start_x,start_y,theta,depth): 
+	max_depth = 6
 	if depth > max_depth:
 		return
 	x = start_x
 	y = start_y
 	d = depth
+	global finish
+	print finish
 	(new_x, new_y) = drawPolarLine((x,y), length/d, theta)
-	# uncomment for step-by-step drawing
+	cv2.imshow("Fractal", image)
 	if not finish:
 		key = cv2.waitKey(0)
-		cv2.imshow("Fractal", image)
 	else:
 		key = 0
 	offset = 0
+	threshold = 0
 	# move left
 	if (key == ord('a')) and not finish:
-		offset = np.pi/8
+		offset = -np.pi/8
 	# move right
 	if key == ord('d') and not finish:
-		offset = -np.pi/8
+		offset = np.pi/8
+	# finish the tree
 	if key == ord('f') and not finish:
 		finish = True
+		threshold = 0
 
-	threshold = 100
 	branches = 2
-	total_angle = np.pi/4
+	total_angle = np.pi/2
 	for i in range(1,branches+2):
 		if random.randint(0,255) > threshold:
-			recursiveTree(new_x, new_y, theta + (i-1)*total_angle/branches - total_angle/2 + offset, d+1, finish)	
+			recursiveTree(new_x, new_y, theta + (i-1)*total_angle/branches - total_angle/2 + offset, d+1)	
 
 def drawPolarLine((start_x,start_y), r, theta):
 	x_len = r*np.cos(theta)
@@ -79,7 +84,7 @@ start_theta = 3*np.pi/2
 
 cv2.imshow('video', image)
 
-recursiveTree(x, y, start_theta, 1, False)
+recursiveTree(x, y, start_theta, 1)
 time.sleep(1)
 
 cv2.imshow('video', image)

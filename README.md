@@ -3,6 +3,8 @@ Playing Around
 
 This is me playing around with stuff, right now OpenCV
 
+Apparently you're supposed to use spaces for everything. I used tabs. 
+
 ## face_detect.py ##
 
 This takes an image path as the first argument and the cascade file as the second arguement, and produces an image with green squares around the detected faces. It's example code from somewhere.

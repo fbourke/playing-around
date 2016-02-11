@@ -25,7 +25,7 @@ def drawLines(start_x,start_y,depth):
 
 
 def recursiveTree(start_x,start_y,theta,depth): 
-	max_depth = 6
+	max_depth = 7
 	if depth > max_depth:
 		return
 	x = start_x
@@ -52,8 +52,8 @@ def recursiveTree(start_x,start_y,theta,depth):
 		finish = True
 		threshold = 0
 
-	branches = 2
-	total_angle = np.pi/2
+	branches = 1
+	total_angle = np.pi/3
 	for i in range(1,branches+2):
 		if random.randint(0,255) > threshold:
 			recursiveTree(new_x, new_y, theta + (i-1)*total_angle/branches - total_angle/2 + offset, d+1)	

@@ -7,32 +7,18 @@ import math
 
 #===================== Function Defs ================================================
 
+# GLOBALS
 finish = False
-
-def drawLines(start_x,start_y,depth): 
-	max_depth = 5
-	print "drawLines called, depth is: " + str(depth)
-	if depth > max_depth:
-		return
-	x = start_x
-	y = start_y
-	d = depth
-	color = getColor()
-	cv2.line(image, (x,y), (x+length/d,y), color, thickness=(max_depth-depth)/2, lineType=8, shift=0)
-	color = getColor()
-	cv2.line(image, (x,y), (x+length/d,y+deflection/d), color, thickness=(max_depth-depth)/2, lineType=8, shift=0)
-	color = getColor()
-	cv2.line(image, (x,y), (x+length/d,y-deflection/d), color, thickness=(max_depth-depth)/2, lineType=8, shift=0)
-	drawLines(x+length/d, y, d+1)
-	drawLines(x+length/d, y+deflection/d, d+1)
-	drawLines(x+length/d, y-deflection/d, d+1)
+color_count = 0
+length = 10
 
 def drawSnowflake(x,y):
 	theta = random.randint(1,100)/100.0
-	print "random theta is: " + str(theta)
+	start = time.time()
 	for i in range(0,6):
 		theta += np.pi/3
 		recursiveTree(x,y,theta,1)
+	print 'Snowflake generation in {:.3f} seconds'.format(time.time()-start)
 
 def recursiveTree(start_x,start_y,theta,depth): 
 	max_depth = 5
@@ -70,15 +56,15 @@ def getColor():
 	# uncomment for red-ish color (autumn theme)
 	# return cv2.cv.Scalar(random.randint(0,75), random.randint(20,200), random.randint(170,255))
 	# uncomment for blue-ish
-	return cv2.cv.Scalar(random.randint(170,255), random.randint(20,200), random.randint(0,75))
-
-
-
-#===================== Main Program ===============================================================
-
-drawing = False # true if mouse is pressed
-mode = True # if True, draw rectangle. Press 'm' to toggle to curve
-ix,iy = -1,-1
+	# return cv2.cv.Scalar(random.randint(170,255), random.randint(20,200), random.randint(0,75))
+	global color_count
+	color_count += 1
+	if color_count > 85*5:
+		color_count = 0
+	blue = color_count/5+170
+	green = blue/2 + random.randint(0,125)
+	red = random.randint(0,75)
+	return cv2.cv.Scalar(blue, green, red)
 
 # mouse callback function
 def draw_circle(event,x,y,flags,param):
@@ -100,8 +86,14 @@ def draw_circle(event,x,y,flags,param):
         # drawSnowflake(ix,iy)
         print "Caught MouseUp"
 
+#===================== Main Program ===============================================================
 
-image = blank_image = np.zeros((600,800,3), np.uint8)
+drawing = False # true if mouse is pressed
+mode = True # if True, draw rectangle. Press 'm' to toggle to curve
+ix,iy = -1,-1
+height,width = 600,800
+
+image = blank_image = np.zeros((height,width,3), np.uint8)
 cv2.namedWindow('image')
 cv2.setMouseCallback('image',draw_circle)
 
@@ -112,6 +104,9 @@ while(1):
         mode = not mode
     elif k == ord('c'):
     	image = blank_image
+    elif k == ord('r'):
+    	length = random.randint(5,60)
+    	drawSnowflake(random.randint(0,width),random.randint(0,height))
     elif k == 27 or k == ord('q'):
         break
 

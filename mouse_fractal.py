@@ -11,24 +11,31 @@ finish = False
 
 def drawLines(start_x,start_y,depth): 
 	max_depth = 5
+	print "drawLines called, depth is: " + str(depth)
 	if depth > max_depth:
 		return
 	x = start_x
 	y = start_y
 	d = depth
-	color = cv2.cv.Scalar(random.randint(0,255), random.randint(0,255), random.randint(0,255));
+	color = getColor()
 	cv2.line(image, (x,y), (x+length/d,y), color, thickness=(max_depth-depth)/2, lineType=8, shift=0)
-	color = cv2.cv.Scalar(random.randint(0,255), random.randint(0,255), random.randint(0,255));
+	color = getColor()
 	cv2.line(image, (x,y), (x+length/d,y+deflection/d), color, thickness=(max_depth-depth)/2, lineType=8, shift=0)
-	color = cv2.cv.Scalar(random.randint(0,255), random.randint(0,255), random.randint(0,255));
+	color = getColor()
 	cv2.line(image, (x,y), (x+length/d,y-deflection/d), color, thickness=(max_depth-depth)/2, lineType=8, shift=0)
 	drawLines(x+length/d, y, d+1)
 	drawLines(x+length/d, y+deflection/d, d+1)
 	drawLines(x+length/d, y-deflection/d, d+1)
 
+def drawSnowflake(x,y):
+	theta = random.randint(1,100)/100.0
+	print "random theta is: " + str(theta)
+	for i in range(0,6):
+		theta += np.pi/3
+		recursiveTree(x,y,theta,1)
 
 def recursiveTree(start_x,start_y,theta,depth): 
-	max_depth = 4
+	max_depth = 5
 	if depth > max_depth:
 		return
 	x = start_x
@@ -44,17 +51,6 @@ def recursiveTree(start_x,start_y,theta,depth):
 		key = 0
 	offset = 0
 	threshold = 0
-	# move left
-	# if (key == ord('a')) and not finish:
-	# 	offset = -np.pi/8
-	# # move right
-	# if key == ord('d') and not finish:
-	# 	offset = np.pi/8
-	# # finish the tree
-	# if key == ord('f') and not finish:
-	# 	finish = True
-	# 	threshold = 0
-
 	branches = 1
 	total_angle = np.pi/3
 	for i in range(1,branches+2):
@@ -64,9 +60,19 @@ def recursiveTree(start_x,start_y,theta,depth):
 def drawPolarLine((start_x,start_y), r, theta):
 	x_len = r*np.cos(theta)
 	y_len = r*np.sin(theta)
-	color = cv2.cv.Scalar(random.randint(0,255), random.randint(0,255), random.randint(0,255));
+	color = getColor()
 	cv2.line(image, (start_x,start_y), (int(start_x+x_len), int(start_y+y_len)), color, thickness=2)
 	return (int(start_x+x_len), int(start_y+y_len))
+
+def getColor():
+	# uncomment for random color
+	# return cv2.cv.Scalar(random.randint(0,255), random.randint(0,255), random.randint(0,255))
+	# uncomment for red-ish color (autumn theme)
+	# return cv2.cv.Scalar(random.randint(0,75), random.randint(20,200), random.randint(170,255))
+	# uncomment for blue-ish
+	return cv2.cv.Scalar(random.randint(170,255), random.randint(20,200), random.randint(0,75))
+
+
 
 #===================== Main Program ===============================================================
 
@@ -81,13 +87,17 @@ def draw_circle(event,x,y,flags,param):
     if event == cv2.EVENT_LBUTTONDOWN:
         drawing = True
         ix,iy = x,y
+        length = random.randint(5,60)
+        drawSnowflake(ix,iy)
         print "Caught MouseDown"
 
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False
-        length = math.hypot(x-ix, y-iy)
-        angle = np.arctan2(y-iy, x-ix)
-        recursiveTree(ix, iy, angle, 1)
+        # length = math.hypot(x-ix, y-iy)
+        # angle = np.arctan2(y-iy, x-ix)
+        # recursiveTree(ix, iy, angle, 1)
+        # length = 50
+        # drawSnowflake(ix,iy)
         print "Caught MouseUp"
 
 

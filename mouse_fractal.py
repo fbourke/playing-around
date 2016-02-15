@@ -5,6 +5,7 @@ import time
 import sys
 import math
 
+
 #===================== Function Defs ================================================
 
 # GLOBALS
@@ -21,7 +22,7 @@ def drawSnowflake(x,y):
 	print 'Snowflake generation in {:.3f} seconds'.format(time.time()-start)
 
 def recursiveTree(start_x,start_y,theta,depth): 
-	max_depth = 5
+	max_depth = 4
 	if depth > max_depth:
 		return
 	x = start_x
@@ -86,6 +87,37 @@ def draw_circle(event,x,y,flags,param):
         # drawSnowflake(ix,iy)
         print "Caught MouseUp"
 
+def helpFunction():
+	global image
+	saved = image
+	hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) #convert it to hsv
+	h, s, v = cv2.split(hsv)
+	v -= 100
+	h -= 100
+	final_hsv = cv2.merge((h, s, v))
+	image = cv2.cvtColor(final_hsv, cv2.COLOR_HSV2BGR)
+	cv2.putText(image, 'Window should be dim', (10,500), cv2.FONT_HERSHEY_DUPLEX, 1, getColor(), 1)
+	cv2.line(image, (10,10), (100, 100), getColor(), thickness=2)
+	cv2.line(image, (15,15), (150, 150), getColor(), thickness=2)
+	drawPolarLine((100,123), 100, 0.5)
+	# cv2.imshow('image',saved)
+	print "should be dim now"
+	k = 0
+	while k != ord('x'):
+		k = cv2.waitKey(1) & 0xFF
+	    # if k == ord('x'):
+	    	# return
+		cv2.imshow('image', image)
+	image = saved
+	cv2.imshow('image', image)
+	print "leaving help_function"
+	# time.sleep(1)
+	# print "slept 1"
+	# # cv2.imshow('image',saved)
+	# time.sleep(1)
+	# print "slept 2"
+
+
 #===================== Main Program ===============================================================
 
 drawing = False # true if mouse is pressed
@@ -103,10 +135,17 @@ while(1):
     if k == ord('m'):
         mode = not mode
     elif k == ord('c'):
-    	image = blank_image
+    	image = np.zeros((height,width,3), np.uint8)
+    	cv2.imshow('image',image)
     elif k == ord('r'):
     	length = random.randint(5,60)
     	drawSnowflake(random.randint(0,width),random.randint(0,height))
+    elif k == ord('d'):
+    	saved = image
+    	helpFunction()
+    	# time.sleep(1)
+    	# image = saved
+    	# cv2.imshow('image',image)
     elif k == 27 or k == ord('q'):
         break
 

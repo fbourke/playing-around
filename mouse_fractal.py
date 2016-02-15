@@ -100,27 +100,12 @@ def helpFunction():
 	# THANKS FOR HELPING ME OUT
 	saved = np.copy(image)
 	cv2.setMouseCallback('image',doNothing)
-	# hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) #convert it to hsv
-	# h, s, v = cv2.split(hsv)
-	# plot = False 
-	# if plot:
-	# 	plt.hist(v[1], 50, normed=1, facecolor='green', alpha=0.75)
-	# 	plt.xlabel('Smarts')
-	# 	plt.ylabel('Probability')
-	# 	# plt.title(r'$\mathrm{Histogram\ of\ IQ:}\ \mu=100,\ \sigma=15$')
-	# 	# plt.axis([40, 160, 0, 0.03])
-	# 	plt.grid(True)
-	# 	plt.show()
-	# v += 256
-	# # s -= 100
-	# final_hsv = cv2.merge((h, s, v))
-	# image = cv2.cvtColor(final_hsv, cv2.COLOR_HSV2BGR)
 	width = 800
 	height = 600
 	box = np.zeros((height,width,3), np.uint8)
 	border = 20
-	# cv2.rectangle(box, (border, border), (width-border, height-border), (50, 50, 50), -2)
-	# image = cv2.addWeighted(box, 0.5, saved, 0.5, 0, image) 
+	cv2.rectangle(box, (border, border), (width-border, height-border), (50, 50, 50), -2)
+	image = cv2.addWeighted(box, 0.5, saved, 0.5, 0, image) 
 	cv2.putText(image, 'Window should be dim', (10,500), cv2.FONT_HERSHEY_DUPLEX, 1, getColor(), 1)
 	cv2.line(image, (10,10), (100, 100), getColor(), thickness=2)
 	cv2.line(image, (15,15), (150, 150), getColor(), thickness=2)

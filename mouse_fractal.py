@@ -70,25 +70,28 @@ def getColor():
 
 # mouse callback function
 def mouseFunction(event,x,y,flags,param):
-    global ix,iy,drawing,mode,length
+	global ix,iy,drawing,mode,length
 
-    if event == cv2.EVENT_LBUTTONDOWN:
-        drawing = True
-        ix,iy = x,y
-        length = random.randint(20,80)
-        drawSnowflake(ix,iy)
-        print "Caught MouseDown"
+	if event == cv2.EVENT_LBUTTONDOWN:
+		drawing = True
+		ix,iy = x,y
+		length = random.randint(20,80)
+		drawSnowflake(ix,iy)
+		print "Caught MouseDown"
 
-    elif event == cv2.EVENT_LBUTTONUP:
-        drawing = False
-        # length = math.hypot(x-ix, y-iy)
-        # angle = np.arctan2(y-iy, x-ix)
-        # recursiveTree(ix, iy, angle, 1)
-        # length = 50
-        # drawSnowflake(ix,iy)
-        print "Caught MouseUp"
+	elif event == cv2.EVENT_LBUTTONUP:
+		drawing = False
+		# length = math.hypot(x-ix, y-iy)
+		# angle = np.arctan2(y-iy, x-ix)
+		# recursiveTree(ix, iy, angle, 1)
+		# length = 50
+		# drawSnowflake(ix,iy)
+		print "Caught MouseUp"
 
 def doNothing(event,x,y,flags,param):
+	if event == cv2.EVENT_LBUTTONDOWN:
+		print (x,y)
+		print "Caught MouseDown"
 	return
 
 def helpFunction():
@@ -103,20 +106,35 @@ def helpFunction():
 	width = 800
 	height = 600
 	box = np.zeros((height,width,3), np.uint8)
-	border = 20
+	box[:,0:width] = (255,255,255)   # make it #WHITE
+	border = 40
 	cv2.rectangle(box, (border, border), (width-border, height-border), (50, 50, 50), -2)
-	image = cv2.addWeighted(box, 0.5, saved, 0.5, 0, image) 
-	cv2.putText(image, 'Window should be dim', (10,500), cv2.FONT_HERSHEY_DUPLEX, 1, getColor(), 1)
-	cv2.line(image, (10,10), (100, 100), getColor(), thickness=2)
-	cv2.line(image, (15,15), (150, 150), getColor(), thickness=2)
-	drawPolarLine((100,123), 100, 0.5)
+	image = cv2.addWeighted(box, 0.75, saved, 0.25, 0, image) 
+	top = border+30
+	spacing = 50
+	text_color = cv2.cv.Scalar(255, 230, 230)
+	cv2.putText(image, 'Welcome to the help menu!', (border+5,top), cv2.FONT_HERSHEY_DUPLEX, 1, text_color, 1)
+	top += spacing
+	cv2.putText(image, 'Press x to exit the help menu', (border+5,top), cv2.FONT_HERSHEY_DUPLEX, 1, text_color, 1)
+	top += spacing
+	cv2.putText(image, 'Press q to quit the program', (border+5,top), cv2.FONT_HERSHEY_DUPLEX, 1, text_color, 1)
+	top += spacing
+	cv2.putText(image, 'Click anywhere to generate a snowflake', (border+5,top), cv2.FONT_HERSHEY_DUPLEX, 1, text_color, 1)
+	top += spacing
+	cv2.putText(image, 'Press c to clear the display', (border+5,top), cv2.FONT_HERSHEY_DUPLEX, 1, text_color, 1)
+	top += spacing
+	cv2.putText(image, 'Press m to flip the colors', (border+5,top), cv2.FONT_HERSHEY_DUPLEX, 1, text_color, 1)
+	top += spacing
+	cv2.putText(image, 'Press r for a snowflake in a random', (border+5,top), cv2.FONT_HERSHEY_DUPLEX, 1, text_color, 1)
+	top += spacing-20
+	cv2.putText(image, 'location', (border+5,top), cv2.FONT_HERSHEY_DUPLEX, 1, text_color, 1)
 	# cv2.imshow('image',saved)
 	print "should be dim now"
 	k = 0
 	while k != ord('x') and k != ord('q'):
 		k = cv2.waitKey(1) & 0xFF
-	    # if k == ord('x'):
-	    	# return
+		# if (k != ord('x')):
+		# 	cv2.putText(image, 'x to exit', (200,200), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.cv.Scalar(0, 0, 230), 1)
 		cv2.imshow('image', image)
 	image = saved
 	cv2.imshow('image', image)
@@ -138,28 +156,33 @@ ix,iy = -1,-1
 height,width = 600,800
 
 image = blank_image = np.zeros((height,width,3), np.uint8)
+image[:,0:width] = (255,255,255)   # make it #WHITE
 cv2.namedWindow('image')
 cv2.setMouseCallback('image',mouseFunction)
+cv2.putText(image, 'Press h for help', (5,height-10), cv2.FONT_HERSHEY_DUPLEX, 0.75, (0,0,0), 1)
 
 while(1):
-    cv2.imshow('image',image)
-    k = cv2.waitKey(1) & 0xFF
-    if k == ord('m'):
-        mode = not mode
-    elif k == ord('c'):
-    	image = np.zeros((height,width,3), np.uint8)
-    	cv2.imshow('image',image)
-    elif k == ord('r'):
-    	length = random.randint(5,60)
-    	drawSnowflake(random.randint(0,width),random.randint(0,height))
-    elif k == ord('d'):
-    	saved = image
-    	helpFunction()
-    	# time.sleep(1)
-    	# image = saved
-    	# cv2.imshow('image',image)
-    elif k == 27 or k == ord('q'):
-        break
+	cv2.imshow('image',image)
+	k = cv2.waitKey(1) & 0xFF
+	if k == ord('m'):
+		image = (255-image)
+		cv2.imshow('image',image)
+	elif k == ord('c'):
+		image = np.zeros((height,width,3), np.uint8)
+		image[:,0:width] = (255,255,255)   # make it #WHITE
+		cv2.putText(image, 'Press h for help', (5,height-10), cv2.FONT_HERSHEY_DUPLEX, 0.75, (0,0,0), 1)
+		cv2.imshow('image',image)
+	elif k == ord('r'):
+		length = random.randint(5,60)
+		drawSnowflake(random.randint(0,width),random.randint(0,height))
+	elif k == ord('h'):
+		saved = image
+		helpFunction()
+		# time.sleep(1)
+		# image = saved
+		# cv2.imshow('image',image)
+	elif k == 27 or k == ord('q'):
+		break
 
 cv2.destroyAllWindows()
 

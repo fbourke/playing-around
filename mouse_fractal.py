@@ -4,6 +4,7 @@ import random
 import time
 import sys
 import math
+# import matplotlib.pyplot as plt
 
 
 #===================== Function Defs ================================================
@@ -22,7 +23,7 @@ def drawSnowflake(x,y):
 	print 'Snowflake generation in {:.3f} seconds'.format(time.time()-start)
 
 def recursiveTree(start_x,start_y,theta,depth): 
-	max_depth = 4
+	max_depth = 3
 	if depth > max_depth:
 		return
 	x = start_x
@@ -68,13 +69,13 @@ def getColor():
 	return cv2.cv.Scalar(blue, green, red)
 
 # mouse callback function
-def draw_circle(event,x,y,flags,param):
+def mouseFunction(event,x,y,flags,param):
     global ix,iy,drawing,mode,length
 
     if event == cv2.EVENT_LBUTTONDOWN:
         drawing = True
         ix,iy = x,y
-        length = random.randint(5,60)
+        length = random.randint(20,80)
         drawSnowflake(ix,iy)
         print "Caught MouseDown"
 
@@ -87,15 +88,39 @@ def draw_circle(event,x,y,flags,param):
         # drawSnowflake(ix,iy)
         print "Caught MouseUp"
 
+def doNothing(event,x,y,flags,param):
+	return
+
 def helpFunction():
 	global image
-	saved = image
-	hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) #convert it to hsv
-	h, s, v = cv2.split(hsv)
-	v -= 100
-	h -= 100
-	final_hsv = cv2.merge((h, s, v))
-	image = cv2.cvtColor(final_hsv, cv2.COLOR_HSV2BGR)
+	# PRO TIP IF YOU JUST SET TWO THINGS EQUAL THEY CHANGE TOGETHER
+	# BECAUSE FUCK YOU PYTHON
+	# I REALLY JUST WANTED A POINTER TO THE EARLIER OBJECT
+	# THAT'S EXACTLY WHAT I WANTED
+	# THANKS FOR HELPING ME OUT
+	saved = np.copy(image)
+	cv2.setMouseCallback('image',doNothing)
+	# hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) #convert it to hsv
+	# h, s, v = cv2.split(hsv)
+	# plot = False 
+	# if plot:
+	# 	plt.hist(v[1], 50, normed=1, facecolor='green', alpha=0.75)
+	# 	plt.xlabel('Smarts')
+	# 	plt.ylabel('Probability')
+	# 	# plt.title(r'$\mathrm{Histogram\ of\ IQ:}\ \mu=100,\ \sigma=15$')
+	# 	# plt.axis([40, 160, 0, 0.03])
+	# 	plt.grid(True)
+	# 	plt.show()
+	# v += 256
+	# # s -= 100
+	# final_hsv = cv2.merge((h, s, v))
+	# image = cv2.cvtColor(final_hsv, cv2.COLOR_HSV2BGR)
+	width = 800
+	height = 600
+	box = np.zeros((height,width,3), np.uint8)
+	border = 20
+	# cv2.rectangle(box, (border, border), (width-border, height-border), (50, 50, 50), -2)
+	# image = cv2.addWeighted(box, 0.5, saved, 0.5, 0, image) 
 	cv2.putText(image, 'Window should be dim', (10,500), cv2.FONT_HERSHEY_DUPLEX, 1, getColor(), 1)
 	cv2.line(image, (10,10), (100, 100), getColor(), thickness=2)
 	cv2.line(image, (15,15), (150, 150), getColor(), thickness=2)
@@ -103,7 +128,7 @@ def helpFunction():
 	# cv2.imshow('image',saved)
 	print "should be dim now"
 	k = 0
-	while k != ord('x'):
+	while k != ord('x') and k != ord('q'):
 		k = cv2.waitKey(1) & 0xFF
 	    # if k == ord('x'):
 	    	# return
@@ -111,6 +136,8 @@ def helpFunction():
 	image = saved
 	cv2.imshow('image', image)
 	print "leaving help_function"
+	cv2.setMouseCallback('image',mouseFunction)
+	# cv2.imshow('image', image)
 	# time.sleep(1)
 	# print "slept 1"
 	# # cv2.imshow('image',saved)
@@ -127,7 +154,7 @@ height,width = 600,800
 
 image = blank_image = np.zeros((height,width,3), np.uint8)
 cv2.namedWindow('image')
-cv2.setMouseCallback('image',draw_circle)
+cv2.setMouseCallback('image',mouseFunction)
 
 while(1):
     cv2.imshow('image',image)
